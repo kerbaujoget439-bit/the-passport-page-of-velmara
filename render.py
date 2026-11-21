@@ -107,7 +107,7 @@ def mrz_lines():
 
 
 # ---------------------------------------------------------------- emblem
-def draw_emblem(draw, cx, cy, r, colour=NAVY, lw=3):
+def draw_emblem(draw, cx, cy, r, colour=NAVY, lw=3, fill_window=True):
     """The arms of Velmara: a harbour lantern above two waves, in a ring."""
     draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=colour, width=lw)
     draw.ellipse([cx - r + 6, cy - r + 6, cx + r - 6, cy + r - 6],
@@ -123,8 +123,9 @@ def draw_emblem(draw, cx, cy, r, colour=NAVY, lw=3):
     # lantern body with a lit window
     draw.rectangle([cx - 8 * s, cy - 13 * s, cx + 8 * s, cy + 6 * s],
                    outline=colour, width=max(2, int(2 * s)))
-    draw.rectangle([cx - 4.5 * s, cy - 9 * s, cx + 4.5 * s, cy + 2 * s],
-                   fill=(233, 183, 76))
+    if fill_window:
+        draw.rectangle([cx - 4.5 * s, cy - 9 * s, cx + 4.5 * s, cy + 2 * s],
+                       fill=(233, 183, 76))
     draw.line([cx - 12 * s, cy + 9 * s, cx + 12 * s, cy + 9 * s],
               fill=colour, width=max(2, int(2 * s)))
     # waves
@@ -248,7 +249,8 @@ def left_page():
     # faint printed frame and a watermark emblem
     d.rectangle([16, 16, PAGE - 17, H - 17], outline=GUARD + (120,), width=2)
     wm = Image.new("RGBA", (340, 340), (0, 0, 0, 0))
-    draw_emblem(ImageDraw.Draw(wm), 170, 170, 150, colour=NAVY + (26,), lw=8)
+    draw_emblem(ImageDraw.Draw(wm), 170, 170, 150, colour=NAVY + (20,), lw=8,
+                fill_window=False)
     pg.alpha_composite(wm, (86, 560))
 
     text_c(d, PAGE // 2, 44, "VISAS", font(SERIF_B, 27), NAVY, spacing=6)
@@ -274,7 +276,7 @@ def left_page():
     # small green fee stamp overlapping the box corner
     fee = rect_stamp([("FOG TAX", SB(15), 19), ("PAID · 12 SOL", SB(13), 0)],
                      GREEN, w=132, h=52)
-    paste_stamp(pg, fee, 392, 268, -7)
+    paste_stamp(pg, fee, 398, 280, -7)
 
     # entry / exit stamps: one coherent travel history
     kord = [("KORDAVIA", SB(17), 21), ("VESK BORDER POST", SR(11), 16)]
@@ -344,7 +346,7 @@ def right_page():
     d.rectangle([MX, 316, MX + 150, 506], outline=NAVY_SOFT, width=2)
     ghost = draw_portrait().resize((56, 71), Image.LANCZOS).convert("RGBA")
     ghost.putalpha(56)
-    pg.alpha_composite(ghost, (RX - 56, 660))
+    pg.alpha_composite(ghost, (RX - 60, 792))
 
     FX = MX + 172  # fields column, right of the portrait
     FW = RX - FX
